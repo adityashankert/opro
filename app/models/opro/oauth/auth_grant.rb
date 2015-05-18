@@ -5,6 +5,7 @@ class Opro::Oauth::AuthGrant
   store_in collection: "opro_auth_grants"
 
   field :code, type: String
+  field :access_token, type: String
   field :refresh_token, type: String
   field :permissions, type: String
   field :access_token_expires_at, type: DateTime
