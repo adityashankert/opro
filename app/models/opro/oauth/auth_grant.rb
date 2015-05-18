@@ -24,7 +24,7 @@ class Opro::Oauth::AuthGrant
 
   alias_attribute :token, :access_token
 
-  serialize :permissions, Hash
+  #serialize :permissions, Hash
 
   # attr_accessible :code, :access_token, :refresh_token, :access_token_expires_at, :permissions, :user_id, :user, :application_id, :application
 

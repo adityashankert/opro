@@ -18,7 +18,7 @@ class Opro::Oauth::ClientApp
   alias_attribute :client_secret, :app_secret
   alias_attribute :secret,        :app_secret
 
-  serialize :permissions, Hash
+  #serialize :permissions, Hash
 
   # attr_accessible :user, :name, :app_id, :client_secret, :app_secret, :secret
 
