@@ -4,14 +4,14 @@ class Opro::Oauth::AuthController < OproController
 
   def new
     @redirect_uri = params[:redirect_uri]
-    @client_app   = Opro::Oauth::ClientApp.find_by_app_id(params[:client_id])
+    @client_app   = Opro::Oauth::ClientApp.find_by(:app_id =>params[:client_id])
     @scopes       = scope_from_params(params)
   end
 
   # :ask_user! is called before creating a new authorization, this allows us to redirect
   def create
     # find or create an auth_grant for a given user
-    application = Opro::Oauth::ClientApp.find_by_client_id(params[:client_id])
+    application = Opro::Oauth::ClientApp.find_by(:client_id =>params[:client_id])
     auth_grant  = Opro::Oauth::AuthGrant.find_or_create_by_user_app(current_user, application)
 
     # add permission changes if there are any
@@ -35,14 +35,14 @@ class Opro::Oauth::AuthController < OproController
 
       # if the request did not come from a form within the application, render the user form
       @redirect_uri ||= params[:redirect_uri]
-      @client_app   ||= Opro::Oauth::ClientApp.find_by_app_id(params[:client_id])
+      @client_app   ||= Opro::Oauth::ClientApp.find_by(:app_id =>params[:client_id])
       params.delete("action").delete("controller")
       redirect_to oauth_new_path(params)
     end
   end
 
   def user_granted_access_before?(user, params)
-    @client_app ||= Opro::Oauth::ClientApp.find_by_app_id(params[:client_id])
+    @client_app ||= Opro::Oauth::ClientApp.find_by(:app_id => params[:client_id])
     return false if user.blank? || @client_app.blank?
     Opro::Oauth::AuthGrant.where(:application_id => @client_app.id, :user_id => user.id).present?
   end

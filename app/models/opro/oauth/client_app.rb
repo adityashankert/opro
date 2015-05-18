@@ -1,5 +1,13 @@
-class Opro::Oauth::ClientApp < ActiveRecord::Base
-  self.table_name = :opro_client_apps
+class Opro::Oauth::ClientApp
+
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  store_in collection: "opro_client_apps"
+
+  field :name, type: String
+  field :app_id, type: String
+  field :app_secret, type: String
+  field :permissions, type: String
 
   belongs_to :user
   validates  :app_id, :uniqueness => true
@@ -19,7 +27,7 @@ class Opro::Oauth::ClientApp < ActiveRecord::Base
   end
 
   def self.authenticate(app_id, app_secret)
-    where(["app_id = ? AND app_secret = ?", app_id, app_secret]).first
+    where(:app_id =>app_id ,:app_secret =>app_secret).first
   end
 
   def self.create_with_user_and_name(user, name)

@@ -1,6 +1,13 @@
-class Opro::Oauth::AuthGrant < ActiveRecord::Base
+class Opro::Oauth::AuthGrant
 
-  self.table_name = :opro_auth_grants
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  store_in collection: "opro_auth_grants"
+
+  field :code, type: String
+  field :refresh_token, type: String
+  field :permissions, type: String
+  field :access_token_expires_at, type: DateTime
 
   belongs_to :user
   belongs_to :client_application, :class_name => "Opro::Oauth::ClientApp", :foreign_key => "application_id"
@@ -49,7 +56,7 @@ class Opro::Oauth::AuthGrant < ActiveRecord::Base
 
   def self.find_by_code_app(code, app)
     app_id = app.is_a?(Integer) ? app : app.id
-    auth_grant = self.where("code = ? AND application_id = ?", code, app_id).first
+    auth_grant = self.where(:code => code,:application_id => app_id).first
   end
 
   # turns array of permissions into a hash
@@ -75,7 +82,7 @@ class Opro::Oauth::AuthGrant < ActiveRecord::Base
   end
 
   def self.find_by_refresh_app(refresh_token, application_id)
-    self.where("refresh_token = ? AND application_id = ?", refresh_token, application_id).first
+    self.where(:refresh_token => refresh_token, :application_id => application_id).first
   end
 
   # generates tokens, expires_at and saves
